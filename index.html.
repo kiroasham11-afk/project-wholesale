@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VELTO | تجارة الجملة</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f5f7fa;color:#172033}
+header{background:#102b25;color:white;padding:22px 18px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{font-size:29px;font-weight:900;letter-spacing:2px;color:#b7f36b}
+.tag{font-size:12px;color:#d3e4db;margin-top:5px}
+.cart{background:#b7f36b;color:#14251d;border:0;border-radius:10px;padding:12px;font-weight:bold}
+.hero{padding:25px 18px;background:#183d32;color:white}
+.hero h1{font-size:27px;margin:0 0 10px}
+.hero p{color:#d6e4dc;line-height:1.8}
+.search{width:100%;padding:14px;border:0;border-radius:10px;font-size:16px;margin-top:12px}
+main{padding:20px 15px;max-width:1000px;margin:auto}
+h2{font-size:20px}
+.categories{display:flex;gap:9px;flex-wrap:wrap}
+.cat{border:1px solid #d9e1df;background:white;padding:10px 13px;border-radius:22px}
+.cat.active{background:#183d32;color:white}
+.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.product{background:white;padding:14px;border-radius:14px;border:1px solid #e7ebef}
+.pic{height:90px;background:#eef5eb;border-radius:10px;display:grid;place-items:center;font-size:43px}
+.product h3{font-size:15px;margin-bottom:7px}
+.muted{color:#738078;font-size:12px}
+.price{font-size:18px;font-weight:bold;color:#1b6044;margin:12px 0}
+.add{width:100%;padding:11px;background:#183d32;color:white;border:0;border-radius:9px;font-weight:bold}
+.notice{background:white;padding:16px;border-radius:12px;margin-top:20px;line-height:1.8}
+footer{text-align:center;background:#102b25;color:white;padding:22px;margin-top:25px}
+@media(min-width:650px){.products{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{padding:40px}.hero h1{font-size:36px}}
+</style>
+</head>
+<body>
+<header>
+<div class="top">
+<div>
+<div class="logo">VELTO</div>
+<div class="tag">تجارة الجملة بشكل أذكى</div>
+</div>
+<button class="cart" onclick="showCart()">🛒 السلة (<span id="count">0</span>)</button>
+</div>
+</header>
+<section class="hero">
+<h1>كل احتياجات تجارتك في مكان واحد</h1>
+<p>منتجات غذائية بالجملة، طلبات أسهل، وإدارة أفضل لمشترياتك.</p>
+<input class="search" id="search" placeholder="ابحث عن منتج..." oninput="render()">
+</section>
+<main>
+<h2>أقسام المنتجات</h2>
+<div class="categories">
+<button class="cat active" onclick="choose('الكل',this)">الكل</button>
+<button class="cat" onclick="choose('أرز ومكرونة',this)">أرز ومكرونة</button>
+<button class="cat" onclick="choose('زيوت',this)">زيوت</button>
+<button class="cat" onclick="choose('بقوليات',this)">بقوليات</button>
+<button class="cat" onclick="choose('معلبات',this)">معلبات</button>
+</div>
+<h2>المنتجات</h2>
+<div class="products" id="products"></div>
+<div class="notice">
+<strong>VELTO لأصحاب المحلات والتجار</strong><br>
+اطلب احتياجاتك بسهولة من مكان واحد.<br>
+<small>هذه نسخة تجريبية. الأسعار والمنتجات المعروضة أمثلة وليست عروض بيع فعلية.</small>
+</div>
+</main>
+<footer>VELTO © 2026<br><small>حلول ذكية لتجارة الجملة</small></footer>
+<script>
+const items=[
+{name:"أرز أبيض",cat:"أرز ومكرونة",price:0,unit:"شيكارة",icon:"🌾"},
+{name:"مكرونة",cat:"أرز ومكرونة",price:0,unit:"كرتونة",icon:"🍝"},
+{name:"زيت طعام",cat:"زيوت",price:0,unit:"كرتونة",icon:"🫒"},
+{name:"سكر أبيض",cat:"بقوليات",price:0,unit:"شيكارة",icon:"🛍️"},
+{name:"عدس",cat:"بقوليات",price:0,unit:"كرتونة",icon:"🫘"},
+{name:"صلصة طماطم",cat:"معلبات",price:0,unit:"كرتونة",icon:"🥫"}
+];
+let category="الكل",cart=[];
+function render(){
+const q=document.getElementById("search").value.trim().toLowerCase();
+const filtered=items.filter(p=>(category==="الكل"||p.cat===category)&&p.name.toLowerCase().includes(q));
+document.getElementById("products").innerHTML=filtered.map((p)=>`
+<div class="product">
+<div class="pic">${p.icon}</div>
+<h3>${p.name}</h3>
+<div class="muted">الوحدة: ${p.unit}</div>
+<div class="price">السعر حسب الاتفاق</div>
+<button class="add" onclick="add('${p.name}')">أضف إلى الطلب</button>
+</div>`).join("");
+}
+function choose(c,b){
+category=c;
+document.querySelectorAll(".cat").forEach(x=>x.classList.remove("active"));
+b.classList.add("active");
+render();
+}
+function add(name){
+cart.push(name);
+document.getElementById("count").textContent=cart.length;
+alert("تمت إضافة "+name+" إلى طلبك التجريبي");
+}
+function showCart(){
+alert(cart.length? "المنتجات في طلبك:\n"+cart.join("\n"):"السلة فارغة حاليًا");
+}
+render();
+</script>
+</body>
+</html>
